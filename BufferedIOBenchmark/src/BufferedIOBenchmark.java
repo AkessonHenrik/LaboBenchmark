@@ -20,11 +20,12 @@ import java.util.logging.Logger;
  * one by one, processing bytes in blocks, using buffered streams or not.
  * 
  * @author Olivier Liechti
+ * Modified by Henrik Akesson
  */
 public class BufferedIOBenchmark {
 
 	static final Logger LOG = Logger.getLogger(BufferedIOBenchmark.class.getName());
-
+	
 	/**
 	 * This enum is used to describe the 4 different strategies for doing the IOs
 	 */
@@ -34,7 +35,7 @@ public class BufferedIOBenchmark {
 		BlockByBlockWithoutBufferedStream,
 		BlockByBlockWithBufferedStream
 	};
-
+	final static String OUTPUT_FOLDER = "binOutput/";
 	final static String FILENAME_PREFIX = "test-data"; // we will write and read test files at this location
 	final static long NUMBER_OF_BYTES_TO_WRITE = 1024 * 1024 * 10; // we will write and read 10 MB files
 	
@@ -50,7 +51,7 @@ public class BufferedIOBenchmark {
 		OutputStream os = null;
 		try {
 			// Let's connect our stream to a file data sink
-			os = new FileOutputStream(FILENAME_PREFIX + "-" + ioStrategy + "-" + blockSize + ".bin");
+			os = new FileOutputStream(OUTPUT_FOLDER + FILENAME_PREFIX + "-" + ioStrategy + "-" + blockSize + ".bin");
 
 			// If the strategy dictates to use a buffered stream, then let's wrap one around our file output stream
 			if ((ioStrategy == IOStrategy.BlockByBlockWithBufferedStream) || (ioStrategy == IOStrategy.ByteByByteWithBufferedStream)) {
@@ -125,7 +126,7 @@ public class BufferedIOBenchmark {
 		InputStream is = null;
 		try {
 			// Let's connect our stream to a file data sink
-			is = new FileInputStream(FILENAME_PREFIX + "-" + ioStrategy + "-" + blockSize + ".bin");
+			is = new FileInputStream(OUTPUT_FOLDER + FILENAME_PREFIX + "-" + ioStrategy + "-" + blockSize + ".bin");
 
 			// If the strategy dictates to use a buffered stream, then let's wrap one around our file input stream
 			if ((ioStrategy == IOStrategy.BlockByBlockWithBufferedStream) || (ioStrategy == IOStrategy.ByteByByteWithBufferedStream)) {
