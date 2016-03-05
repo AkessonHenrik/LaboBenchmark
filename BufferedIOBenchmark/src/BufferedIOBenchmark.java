@@ -1,12 +1,7 @@
 
 import util.Timer;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,9 +18,20 @@ import java.util.logging.Logger;
  * Modified by Henrik Akesson
  */
 public class BufferedIOBenchmark {
-
+	private static PrintWriter pw;
 	static final Logger LOG = Logger.getLogger(BufferedIOBenchmark.class.getName());
-	
+
+	public BufferedIOBenchmark() {
+		try {
+			pw = new PrintWriter("results.csv", "UTF-8");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		pw.println("tcsoperation,strategy,blockSize,fileSizeInBytes,durationInMs");
+	}
+
 	/**
 	 * This enum is used to describe the 4 different strategies for doing the IOs
 	 */
@@ -46,6 +52,7 @@ public class BufferedIOBenchmark {
 	 */
 	private void produceTestData(IOStrategy ioStrategy, long numberOfBytesToWrite, int blockSize) {
 		LOG.log(Level.INFO, "Generating test data ({0}, {1} bytes, block size: {2}...", new Object[]{ioStrategy, numberOfBytesToWrite, blockSize});
+		pw.print("WRITE" + "," + ioStrategy + "," + blockSize + "," + numberOfBytesToWrite + ",");
 		Timer.start();
 
 		OutputStream os = null;
@@ -74,6 +81,8 @@ public class BufferedIOBenchmark {
 				LOG.log(Level.SEVERE, ex.getMessage(), ex);
 			}
 		}
+		long timeTaken = Timer.takeTime();
+		pw.print(timeTaken + "\n");
 		LOG.log(Level.INFO, "  > Done in {0} ms.", Timer.takeTime());
 	}
 	
@@ -121,13 +130,15 @@ public class BufferedIOBenchmark {
 	 */
 	private void consumeTestData(IOStrategy ioStrategy, int blockSize) {
 		LOG.log(Level.INFO, "Consuming test data ({0}, block size: {1}...", new Object[]{ioStrategy, blockSize});
+		String fileName = OUTPUT_FOLDER + FILENAME_PREFIX + "-" + ioStrategy + "-" + blockSize + ".bin";
+		File f = new File(fileName);
+		long fileSize = f.length();
 		Timer.start();
 
 		InputStream is = null;
 		try {
 			// Let's connect our stream to a file data sink
-			is = new FileInputStream(OUTPUT_FOLDER + FILENAME_PREFIX + "-" + ioStrategy + "-" + blockSize + ".bin");
-
+			is = new FileInputStream(fileName);
 			// If the strategy dictates to use a buffered stream, then let's wrap one around our file input stream
 			if ((ioStrategy == IOStrategy.BlockByBlockWithBufferedStream) || (ioStrategy == IOStrategy.ByteByByteWithBufferedStream)) {
 				is = new BufferedInputStream(is);
@@ -149,6 +160,8 @@ public class BufferedIOBenchmark {
 				LOG.log(Level.SEVERE, ex.getMessage(), ex);
 			}
 		}
+		long timeTaken = Timer.takeTime();
+		pw.println("READ" + "," + ioStrategy + "," + blockSize + "," + fileSize + "," + timeTaken);
 		LOG.log(Level.INFO, "  > Done in {0} ms.", Timer.takeTime());
 
 	}
@@ -162,6 +175,7 @@ public class BufferedIOBenchmark {
 		int totalBytes = 0;
 		// If the strategy dictates to write byte by byte, then it's easy to write the loop; but let's just hope that our client has 
 		// given us a buffered output stream, otherwise the performance will be really bad
+
 		if ((ioStrategy == IOStrategy.ByteByByteWithBufferedStream) || (ioStrategy == IOStrategy.ByteByByteWithoutBufferedStream)) {
 			int c;
 			while ((c = is.read()) != -1) {
@@ -217,6 +231,8 @@ public class BufferedIOBenchmark {
 		bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, 50);
 		bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, 5);
 		bm.consumeTestData(IOStrategy.ByteByByteWithoutBufferedStream, 0);
+
+		pw.close();
 	}
 
 }

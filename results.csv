@@ -1,0 +1,17 @@
+tcsoperation,strategy,blockSize,fileSizeInBytes,durationInMs
+WRITE,BlockByBlockWithBufferedStream,500,10485760,18
+WRITE,BlockByBlockWithBufferedStream,50,10485760,15
+WRITE,BlockByBlockWithBufferedStream,5,10485760,77
+WRITE,ByteByByteWithBufferedStream,0,10485760,187
+WRITE,BlockByBlockWithoutBufferedStream,500,10485760,64
+WRITE,BlockByBlockWithoutBufferedStream,50,10485760,423
+WRITE,BlockByBlockWithoutBufferedStream,5,10485760,3277
+WRITE,ByteByByteWithoutBufferedStream,0,10485760,14977
+READ,BlockByBlockWithBufferedStream,500,10485760,17
+READ,BlockByBlockWithBufferedStream,50,10485760,16
+READ,BlockByBlockWithBufferedStream,5,10485760,34
+READ,ByteByByteWithBufferedStream,0,10485760,61
+READ,BlockByBlockWithoutBufferedStream,500,10485760,28
+READ,BlockByBlockWithoutBufferedStream,50,10485760,259
+READ,BlockByBlockWithoutBufferedStream,5,10485760,2505
+READ,ByteByByteWithoutBufferedStream,0,10485760,11982
