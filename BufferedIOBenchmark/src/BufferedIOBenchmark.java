@@ -83,7 +83,7 @@ public class BufferedIOBenchmark {
 		}
 		long timeTaken = Timer.takeTime();
 		pw.print(timeTaken + "\n");
-		LOG.log(Level.INFO, "  > Done in {0} ms.", Timer.takeTime());
+		LOG.log(Level.INFO, "  > Done in {0} ms.", timeTaken);
 	}
 	
 	/**
@@ -162,7 +162,7 @@ public class BufferedIOBenchmark {
 		}
 		long timeTaken = Timer.takeTime();
 		pw.println("READ" + "," + ioStrategy + "," + blockSize + "," + fileSize + "," + timeTaken);
-		LOG.log(Level.INFO, "  > Done in {0} ms.", Timer.takeTime());
+		LOG.log(Level.INFO, "  > Done in {0} ms.", timeTaken);
 
 	}
 
