@@ -206,31 +206,48 @@ public class BufferedIOBenchmark {
 
 		LOG.log(Level.INFO, "");
 		LOG.log(Level.INFO, "*** BENCHMARKING WRITE OPERATIONS (with BufferedStream)", Timer.takeTime());
-		bm.produceTestData(IOStrategy.BlockByBlockWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 500);
-		bm.produceTestData(IOStrategy.BlockByBlockWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 50);
-		bm.produceTestData(IOStrategy.BlockByBlockWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 5);
+//		bm.produceTestData(IOStrategy.BlockByBlockWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 500);
+//		bm.produceTestData(IOStrategy.BlockByBlockWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 50);
+//		bm.produceTestData(IOStrategy.BlockByBlockWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 5);
 		bm.produceTestData(IOStrategy.ByteByByteWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 0);
+
+		for (int i = 5; i < 1000; i *= 2) {
+			bm.produceTestData(IOStrategy.BlockByBlockWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, i);
+		}
 
 		LOG.log(Level.INFO, "");
 		LOG.log(Level.INFO, "*** BENCHMARKING WRITE OPERATIONS (without BufferedStream)", Timer.takeTime());
-		bm.produceTestData(IOStrategy.BlockByBlockWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 500);
-		bm.produceTestData(IOStrategy.BlockByBlockWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 50);
-		bm.produceTestData(IOStrategy.BlockByBlockWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 5);
+//		bm.produceTestData(IOStrategy.BlockByBlockWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 500);
+//		bm.produceTestData(IOStrategy.BlockByBlockWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 50);
+//		bm.produceTestData(IOStrategy.BlockByBlockWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 5);
 		bm.produceTestData(IOStrategy.ByteByByteWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 0);
+
+		for (int i = 5; i < 1000; i *= 2) {
+			bm.produceTestData(IOStrategy.BlockByBlockWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, i);
+		}
 
 		LOG.log(Level.INFO, "");
 		LOG.log(Level.INFO, "*** BENCHMARKING READ OPERATIONS (with BufferedStream)", Timer.takeTime());
-		bm.consumeTestData(IOStrategy.BlockByBlockWithBufferedStream, 500);
-		bm.consumeTestData(IOStrategy.BlockByBlockWithBufferedStream, 50);
-		bm.consumeTestData(IOStrategy.BlockByBlockWithBufferedStream, 5);
+//		bm.consumeTestData(IOStrategy.BlockByBlockWithBufferedStream, 500);
+//		bm.consumeTestData(IOStrategy.BlockByBlockWithBufferedStream, 50);
+//		bm.consumeTestData(IOStrategy.BlockByBlockWithBufferedStream, 5);
 		bm.consumeTestData(IOStrategy.ByteByByteWithBufferedStream, 0);
-		
+
+		for (int i = 5; i < 1000; i *= 2) {
+			bm.consumeTestData(IOStrategy.BlockByBlockWithBufferedStream, i);
+		}
+
+
 		LOG.log(Level.INFO, "");
 		LOG.log(Level.INFO, "*** BENCHMARKING READ OPERATIONS (without BufferedStream)", Timer.takeTime());
-		bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, 500);
-		bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, 50);
-		bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, 5);
+//		bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, 500);
+//		bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, 50);
+//		bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, 5);
 		bm.consumeTestData(IOStrategy.ByteByByteWithoutBufferedStream, 0);
+
+		for (int i = 5; i < 1000; i *= 2) {
+			bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, i);
+		}
 
 		pw.close();
 	}
