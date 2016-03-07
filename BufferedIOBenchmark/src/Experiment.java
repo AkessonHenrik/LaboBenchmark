@@ -1,5 +1,6 @@
 import util.Timer;
 
+import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +19,14 @@ public class Experiment {
 
         System.setProperty("java.util.logging.SimpleFormatter.format", "%5$s %n");
 
+        BenchmarkResult result;
+        CsvWriter csvWriter = null;
+        try {
+            csvWriter = new CsvWriter("results");
+        } catch (FileNotFoundException e) {
+            System.out.println("hello");
+            e.printStackTrace();
+        }
 
         //Buffered Stream Benchmarkers
 		Benchmarker bufferedBlock500 = new BenchmarkerBlockByBlockWithBufferedStream(OUTPUT_FOLDER, FILENAME_PREFIX, 500);
@@ -33,32 +42,47 @@ public class Experiment {
 
 		LOG.log(Level.INFO, "");
 		LOG.log(Level.INFO, "*** BENCHMARKING WRITE OPERATIONS (with BufferedStream)", Timer.takeTime());
-        bufferedBlock500.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 500);
-        bufferedBlock50.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 50);
-        bufferedBlock5.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 5);
-        bufferedByte.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 0);
+        result = bufferedBlock500.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 500);
+        csvWriter.writeResults(result);
+        result = bufferedBlock50.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 50);
+        csvWriter.writeResults(result);
+        result = bufferedBlock5.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 5);
+        csvWriter.writeResults(result);
+        result = bufferedByte.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 0);
+        csvWriter.writeResults(result);
 
         LOG.log(Level.INFO, "");
         LOG.log(Level.INFO, "*** BENCHMARKING WRITE OPERATIONS (without BufferedStream)", Timer.takeTime());
-        nonbufferedBlock500.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 500);
-        nonbufferedBlock50.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 50);
-        nonbufferedBlock5.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 5);
-        nonbufferedByte.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 0);
+        result = nonbufferedBlock500.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 500);
+        csvWriter.writeResults(result);
+        result = nonbufferedBlock50.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 50);
+        csvWriter.writeResults(result);
+        result = nonbufferedBlock5.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 5);
+        csvWriter.writeResults(result);
+        result = nonbufferedByte.produceTestData(NUMBER_OF_BYTES_TO_WRITE, 0);
+        csvWriter.writeResults(result);
 
 
         LOG.log(Level.INFO, "");
 		LOG.log(Level.INFO, "*** BENCHMARKING READ OPERATIONS (with BufferedStream)", Timer.takeTime());
-		bufferedBlock500.consumeTestData(500);
-		bufferedBlock50.consumeTestData(50);
-		bufferedBlock5.consumeTestData(5);
-		bufferedByte.consumeTestData(0);
+		result = bufferedBlock500.consumeTestData(500);
+        csvWriter.writeResults(result);
+        result = bufferedBlock50.consumeTestData(50);
+        csvWriter.writeResults(result);
+        result = bufferedBlock5.consumeTestData(5);
+        csvWriter.writeResults(result);
+        result = bufferedByte.consumeTestData(0);
 
         LOG.log(Level.INFO, "");
         LOG.log(Level.INFO, "*** BENCHMARKING READ OPERATIONS (with BufferedStream)", Timer.takeTime());
-        nonbufferedBlock500.consumeTestData(500);
-        nonbufferedBlock50.consumeTestData(50);
-        nonbufferedBlock5.consumeTestData(5);
-        nonbufferedByte.consumeTestData(0);
+        result = nonbufferedBlock500.consumeTestData(500);
+        csvWriter.writeResults(result);
+        result = nonbufferedBlock50.consumeTestData(50);
+        csvWriter.writeResults(result);
+        result = nonbufferedBlock5.consumeTestData(5);
+        csvWriter.writeResults(result);
+        result = nonbufferedByte.consumeTestData(0);
+        csvWriter.writeResults(result);
 
     }
 }

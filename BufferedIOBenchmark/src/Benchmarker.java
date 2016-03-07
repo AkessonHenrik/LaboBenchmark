@@ -45,7 +45,7 @@ public abstract class Benchmarker {
         }
         long timeTaken = Timer.takeTime();
         LOG.log(Level.INFO, "  > Done in {0} ms.", timeTaken);
-        return new BenchmarkResult(strategy, timeTaken, Action.WRITE, numberOfBytesToWrite);
+        return new BenchmarkResult(strategy, timeTaken, Action.WRITE, numberOfBytesToWrite, blockSize);
     }
 
     protected void produceDataToStream(long numberOfBytesToWrite, int blockSize) throws IOException {
@@ -77,7 +77,7 @@ public abstract class Benchmarker {
         }
         long timeTaken = Timer.takeTime();
         LOG.log(Level.INFO, "  > Done in {0} ms.", timeTaken);
-        return new BenchmarkResult(strategy, timeTaken, Action.READ, size);
+        return new BenchmarkResult(strategy, timeTaken, Action.READ, size, blockSize);
     }
 
     protected void consumeDataFromStream(InputStream is, IOStrategy ioStrategy, int blockSize) throws IOException {
@@ -149,7 +149,7 @@ class BenchmarkerBlockByBlockWithoutBufferedStream extends BenchmarkerWithoutBuf
         super(IOStrategy.BlockByBlockWithoutBufferedStream, OUTPUT_FOLDER, FILENAME_PREFIX, blockSize);
     }
 
-    public void produceDataToStream(IOStrategy ioStrategy, long numberOfBytesToWrite, int blockSize) throws IOException {
+    public void produceDataToStream(long numberOfBytesToWrite, int blockSize) throws IOException {
         long remainder = numberOfBytesToWrite % blockSize;
         long numberOfBlocks = (numberOfBytesToWrite / blockSize);
         byte[] block = new byte[blockSize];

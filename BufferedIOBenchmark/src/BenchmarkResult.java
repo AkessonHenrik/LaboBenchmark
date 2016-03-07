@@ -16,12 +16,14 @@ public class BenchmarkResult {
     private long time;
     private Action action;
     private long fileSize;
+    private int blockSize;
 
-    public BenchmarkResult(IOStrategy strategy, long time, Action action, long fileSize) {
+    public BenchmarkResult(IOStrategy strategy, long time, Action action, long fileSize, int blockSize) {
         this.strategy = strategy;
         this.time = time;
         this.action = action;
         this.fileSize = fileSize;
+        this.blockSize = blockSize;
     }
 
 
@@ -39,5 +41,9 @@ public class BenchmarkResult {
 
     public long getFileSize() {
         return fileSize;
+    }
+
+    public int getBlockSize() {
+        return blockSize;
     }
 }
