@@ -1,23 +1,68 @@
-
+/**
+ * This is a very simple program, which main objective is to show that you can
+ * observe very significant performance differences, depending on you implement
+ * IO processing.
+ *
+ * Running the program allows you to compare both the WRITING and the READING of
+ * bytes to the local file system. Different methods are compared: processing bytes
+ * one by one, processing bytes in blocks, using buffered streams or not.
+ *
+ * @author Olivier Liechti
+ * Modified by Henrik Akesson
+ */
 import util.Timer;
 
 import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * This is a very simple program, which main objective is to show that you can
- * observe very significant performance differences, depending on you implement
- * IO processing. 
- * 
- * Running the program allows you to compare both the WRITING and the READING of
- * bytes to the local file system. Different methods are compared: processing bytes
- * one by one, processing bytes in blocks, using buffered streams or not.
- * 
- * @author Olivier Liechti
- * Modified by Henrik Akesson
- */
-public class BufferedIOBenchmark {
+/****************************************************************/
+//Draft for chain of responsibility pattern
+abstract class Benchmarker {
+	protected Benchmarker successor;
+	private static PrintWriter pw;
+	static final Logger LOG = Logger.getLogger(BufferedIOBenchmark.class.getName());
+	final static String OUTPUT_FOLDER = "binOutput/";
+	final static String FILENAME_PREFIX = "test-data"; // we will write and read test files at this location
+
+	abstract void produceTestData(BufferedIOBenchmark.IOStrategy ioStrategy, long numberOfBytesToWrite, int blockSize);
+	abstract void produceDataToStream(OutputStream os, BufferedIOBenchmark.IOStrategy ioStrategy, long numberOfBytesToWrite, int blockSize);
+	abstract void consumeTestData(BufferedIOBenchmark.IOStrategy ioStrategy, int blockSize);
+	abstract void consumeDataFromStream(InputStream is, BufferedIOBenchmark.IOStrategy ioStrategy, int blockSize);
+
+
+}
+//class ByteByByteWithoutBufferedStreamBenchmarker extends Benchmarker {}
+//class ByteByByteWithBufferedStreamBenchmarker extends Benchmarker {}
+//class BlockByBlockWithoutBufferedStreamBenchmarker extends Benchmarker {}
+//class BlockByBlockWithBufferedStreamBenchmarker extends Benchmarker {}
+//Benchmarker factory
+class BenchmarkerFactory {
+	public static Benchmarker getBenchmarker(BufferedIOBenchmark.IOStrategy strategy) {
+		Benchmarker benchmarker = null;
+		switch(strategy) {
+			case ByteByByteWithoutBufferedStream:
+			case ByteByByteWithBufferedStream:
+			case BlockByBlockWithoutBufferedStream:
+			case BlockByBlockWithBufferedStream:
+		}
+		return benchmarker;
+	}
+}
+/****************************************************************/
+
+
+class ByteByByteWithoutBufferedStreamBenchmarker extends BufferedIOBenchmark {
+    public void produceTestData(BufferedIOBenchmark.IOStrategy ioStrategy, long numberOfBytesToWrite, int blockSize) {}
+    public void produceDataToStream(OutputStream os, BufferedIOBenchmark.IOStrategy ioStrategy, long numberOfBytesToWrite, int blockSize) {}
+    public void consumeTestData(BufferedIOBenchmark.IOStrategy ioStrategy, int blockSize) {}
+    public void consumeDataFromStream(InputStream is, BufferedIOBenchmark.IOStrategy ioStrategy, int blockSize) {}
+}
+class ByteByByteWithBufferedStreamBenchmarker extends BufferedIOBenchmark {}
+class BlockByBlockWithoutBufferedStreamBenchmarker extends BufferedIOBenchmark {}
+class BlockByBlockWithBufferedStreamBenchmarker extends BufferedIOBenchmark {}
+
+public abstract class BufferedIOBenchmark {
 	private static PrintWriter pw;
 	static final Logger LOG = Logger.getLogger(BufferedIOBenchmark.class.getName());
 
@@ -54,7 +99,6 @@ public class BufferedIOBenchmark {
 		LOG.log(Level.INFO, "Generating test data ({0}, {1} bytes, block size: {2}...", new Object[]{ioStrategy, numberOfBytesToWrite, blockSize});
 		pw.print("WRITE" + "," + ioStrategy + "," + blockSize + "," + numberOfBytesToWrite + ",");
 		Timer.start();
-
 		OutputStream os = null;
 		try {
 			// Let's connect our stream to a file data sink
@@ -202,54 +246,54 @@ public class BufferedIOBenchmark {
 	public static void main(String[] args) {
 		System.setProperty("java.util.logging.SimpleFormatter.format", "%5$s %n");
 
-		BufferedIOBenchmark bm = new BufferedIOBenchmark();
-
-		LOG.log(Level.INFO, "");
-		LOG.log(Level.INFO, "*** BENCHMARKING WRITE OPERATIONS (with BufferedStream)", Timer.takeTime());
-//		bm.produceTestData(IOStrategy.BlockByBlockWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 500);
-//		bm.produceTestData(IOStrategy.BlockByBlockWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 50);
-//		bm.produceTestData(IOStrategy.BlockByBlockWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 5);
-		bm.produceTestData(IOStrategy.ByteByByteWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 0);
-
-		for (int i = 5; i < 1000; i *= 2) {
-			bm.produceTestData(IOStrategy.BlockByBlockWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, i);
-		}
-
-		LOG.log(Level.INFO, "");
-		LOG.log(Level.INFO, "*** BENCHMARKING WRITE OPERATIONS (without BufferedStream)", Timer.takeTime());
-//		bm.produceTestData(IOStrategy.BlockByBlockWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 500);
-//		bm.produceTestData(IOStrategy.BlockByBlockWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 50);
-//		bm.produceTestData(IOStrategy.BlockByBlockWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 5);
-		bm.produceTestData(IOStrategy.ByteByByteWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 0);
-
-		for (int i = 5; i < 1000; i *= 2) {
-			bm.produceTestData(IOStrategy.BlockByBlockWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, i);
-		}
-
-		LOG.log(Level.INFO, "");
-		LOG.log(Level.INFO, "*** BENCHMARKING READ OPERATIONS (with BufferedStream)", Timer.takeTime());
-//		bm.consumeTestData(IOStrategy.BlockByBlockWithBufferedStream, 500);
-//		bm.consumeTestData(IOStrategy.BlockByBlockWithBufferedStream, 50);
-//		bm.consumeTestData(IOStrategy.BlockByBlockWithBufferedStream, 5);
-		bm.consumeTestData(IOStrategy.ByteByByteWithBufferedStream, 0);
-
-		for (int i = 5; i < 1000; i *= 2) {
-			bm.consumeTestData(IOStrategy.BlockByBlockWithBufferedStream, i);
-		}
-
-
-		LOG.log(Level.INFO, "");
-		LOG.log(Level.INFO, "*** BENCHMARKING READ OPERATIONS (without BufferedStream)", Timer.takeTime());
-//		bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, 500);
-//		bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, 50);
-//		bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, 5);
-		bm.consumeTestData(IOStrategy.ByteByByteWithoutBufferedStream, 0);
-
-		for (int i = 5; i < 1000; i *= 2) {
-			bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, i);
-		}
-
-		pw.close();
+//		BufferedIOBenchmark bm = new BufferedIOBenchmark();
+//
+//		LOG.log(Level.INFO, "");
+//		LOG.log(Level.INFO, "*** BENCHMARKING WRITE OPERATIONS (with BufferedStream)", Timer.takeTime());
+////		bm.produceTestData(IOStrategy.BlockByBlockWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 500);
+////		bm.produceTestData(IOStrategy.BlockByBlockWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 50);
+////		bm.produceTestData(IOStrategy.BlockByBlockWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 5);
+//		bm.produceTestData(IOStrategy.ByteByByteWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 0);
+//
+//		for (int i = 5; i < 1000; i *= 2) {
+//			bm.produceTestData(IOStrategy.BlockByBlockWithBufferedStream, NUMBER_OF_BYTES_TO_WRITE, i);
+//		}
+//
+//		LOG.log(Level.INFO, "");
+//		LOG.log(Level.INFO, "*** BENCHMARKING WRITE OPERATIONS (without BufferedStream)", Timer.takeTime());
+////		bm.produceTestData(IOStrategy.BlockByBlockWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 500);
+////		bm.produceTestData(IOStrategy.BlockByBlockWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 50);
+////		bm.produceTestData(IOStrategy.BlockByBlockWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 5);
+//		bm.produceTestData(IOStrategy.ByteByByteWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, 0);
+//
+//		for (int i = 5; i < 1000; i *= 2) {
+//			bm.produceTestData(IOStrategy.BlockByBlockWithoutBufferedStream, NUMBER_OF_BYTES_TO_WRITE, i);
+//		}
+//
+//		LOG.log(Level.INFO, "");
+//		LOG.log(Level.INFO, "*** BENCHMARKING READ OPERATIONS (with BufferedStream)", Timer.takeTime());
+////		bm.consumeTestData(IOStrategy.BlockByBlockWithBufferedStream, 500);
+////		bm.consumeTestData(IOStrategy.BlockByBlockWithBufferedStream, 50);
+////		bm.consumeTestData(IOStrategy.BlockByBlockWithBufferedStream, 5);
+//		bm.consumeTestData(IOStrategy.ByteByByteWithBufferedStream, 0);
+//
+//		for (int i = 5; i < 1000; i *= 2) {
+//			bm.consumeTestData(IOStrategy.BlockByBlockWithBufferedStream, i);
+//		}
+//
+//
+//		LOG.log(Level.INFO, "");
+//		LOG.log(Level.INFO, "*** BENCHMARKING READ OPERATIONS (without BufferedStream)", Timer.takeTime());
+////		bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, 500);
+////		bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, 50);
+////		bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, 5);
+//		bm.consumeTestData(IOStrategy.ByteByByteWithoutBufferedStream, 0);
+//
+//		for (int i = 5; i < 1000; i *= 2) {
+//			bm.consumeTestData(IOStrategy.BlockByBlockWithoutBufferedStream, i);
+//		}
+//
+//		pw.close();
 	}
 
 }
