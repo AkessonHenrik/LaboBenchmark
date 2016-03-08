@@ -1,3 +1,7 @@
+/**
+ * Created by Henrik Akesson
+ */
+
 import util.Timer;
 
 import java.io.*;
@@ -83,7 +87,7 @@ public abstract class Benchmarker {
     protected void consumeDataFromStream(InputStream is, IOStrategy ioStrategy, int blockSize) throws IOException {
     }
 
-}
+};
 
 abstract class BenchmarkerWithBufferedStream extends Benchmarker {
     protected BenchmarkerWithBufferedStream(IOStrategy strategy, String OUTPUT_FOLDER, String FILENAME_PREFIX, int blockSize) {
@@ -91,13 +95,13 @@ abstract class BenchmarkerWithBufferedStream extends Benchmarker {
         out = new BufferedOutputStream(out);
         in = new BufferedInputStream(in);
     }
-}
+};
 
 abstract class BenchmarkerWithoutBufferedStream extends Benchmarker {
     protected BenchmarkerWithoutBufferedStream(IOStrategy strategy, String OUTPUT_FOLDER, String FILENAME_PREFIX, int blockSize) {
         super(strategy, OUTPUT_FOLDER, FILENAME_PREFIX, blockSize);
     }
-}
+};
 
 class BenchmarkerByteByByteWithoutBufferedStream extends BenchmarkerWithoutBufferedStream {
     protected BenchmarkerByteByByteWithoutBufferedStream(String OUTPUT_FOLDER, String FILENAME_PREFIX, int blockSize) {
@@ -119,7 +123,7 @@ class BenchmarkerByteByByteWithoutBufferedStream extends BenchmarkerWithoutBuffe
         LOG.log(Level.INFO, "Number of bytes read: {0}", new Object[]{totalBytes});
     }
 
-}
+};
 
 class BenchmarkerByteByByteWithBufferedStream extends BenchmarkerWithBufferedStream {
     protected BenchmarkerByteByByteWithBufferedStream(String OUTPUT_FOLDER, String FILENAME_PREFIX, int blockSize) {
@@ -142,7 +146,7 @@ class BenchmarkerByteByByteWithBufferedStream extends BenchmarkerWithBufferedStr
         LOG.log(Level.INFO, "Number of bytes read: {0}", new Object[]{totalBytes});
     }
 
-}
+};
 
 class BenchmarkerBlockByBlockWithoutBufferedStream extends BenchmarkerWithoutBufferedStream {
     protected BenchmarkerBlockByBlockWithoutBufferedStream(String OUTPUT_FOLDER, String FILENAME_PREFIX, int blockSize) {
@@ -182,7 +186,7 @@ class BenchmarkerBlockByBlockWithoutBufferedStream extends BenchmarkerWithoutBuf
         LOG.log(Level.INFO, "Number of bytes read: {0}", new Object[]{totalBytes});
     }
 
-}
+};
 
 class BenchmarkerBlockByBlockWithBufferedStream extends BenchmarkerWithBufferedStream {
     protected BenchmarkerBlockByBlockWithBufferedStream(String OUTPUT_FOLDER, String FILENAME_PREFIX, int blockSize) {
@@ -222,4 +226,4 @@ class BenchmarkerBlockByBlockWithBufferedStream extends BenchmarkerWithBufferedS
 
         LOG.log(Level.INFO, "Number of bytes read: {0}", new Object[]{totalBytes});
     }
-}
+};

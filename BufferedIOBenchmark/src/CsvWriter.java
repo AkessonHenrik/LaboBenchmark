@@ -1,10 +1,11 @@
+/**
+ * Created by Henrik Akesson
+ */
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
-/**
- * Created by Henrik on 07.03.2016.
- */
 public class CsvWriter {
 
     private PrintWriter pw;

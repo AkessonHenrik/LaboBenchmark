@@ -1,3 +1,6 @@
+/**
+ * Created by Henrik Akesson
+ */
 
 enum IOStrategy {
     ByteByByteWithoutBufferedStream,

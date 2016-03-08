@@ -1,12 +1,12 @@
+/**
+ * Created by Henrik Akesson
+ */
+
 import util.Timer;
 
 import java.io.FileNotFoundException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-/**
- * Created by Henrik on 07.03.2016.
- */
 
 public class Experiment {
 
@@ -24,7 +24,6 @@ public class Experiment {
         try {
             csvWriter = new CsvWriter("results");
         } catch (FileNotFoundException e) {
-            System.out.println("hello");
             e.printStackTrace();
         }
 
