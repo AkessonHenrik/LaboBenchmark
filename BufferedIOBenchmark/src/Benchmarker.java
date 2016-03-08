@@ -89,6 +89,7 @@ public abstract class Benchmarker {
 
 };
 
+//Takes care of turning the streams into buffered streams
 abstract class BenchmarkerWithBufferedStream extends Benchmarker {
     protected BenchmarkerWithBufferedStream(IOStrategy strategy, String OUTPUT_FOLDER, String FILENAME_PREFIX, int blockSize) {
         super(strategy, OUTPUT_FOLDER, FILENAME_PREFIX, blockSize);
@@ -97,13 +98,8 @@ abstract class BenchmarkerWithBufferedStream extends Benchmarker {
     }
 };
 
-abstract class BenchmarkerWithoutBufferedStream extends Benchmarker {
-    protected BenchmarkerWithoutBufferedStream(IOStrategy strategy, String OUTPUT_FOLDER, String FILENAME_PREFIX, int blockSize) {
-        super(strategy, OUTPUT_FOLDER, FILENAME_PREFIX, blockSize);
-    }
-};
 
-class BenchmarkerByteByByteWithoutBufferedStream extends BenchmarkerWithoutBufferedStream {
+class BenchmarkerByteByByteWithoutBufferedStream extends Benchmarker {
     protected BenchmarkerByteByByteWithoutBufferedStream(String OUTPUT_FOLDER, String FILENAME_PREFIX, int blockSize) {
         super(IOStrategy.ByteByByteWithoutBufferedStream, OUTPUT_FOLDER, FILENAME_PREFIX, blockSize);
     }
@@ -148,7 +144,7 @@ class BenchmarkerByteByByteWithBufferedStream extends BenchmarkerWithBufferedStr
 
 };
 
-class BenchmarkerBlockByBlockWithoutBufferedStream extends BenchmarkerWithoutBufferedStream {
+class BenchmarkerBlockByBlockWithoutBufferedStream extends Benchmarker {
     protected BenchmarkerBlockByBlockWithoutBufferedStream(String OUTPUT_FOLDER, String FILENAME_PREFIX, int blockSize) {
         super(IOStrategy.BlockByBlockWithoutBufferedStream, OUTPUT_FOLDER, FILENAME_PREFIX, blockSize);
     }
@@ -192,7 +188,7 @@ class BenchmarkerBlockByBlockWithBufferedStream extends BenchmarkerWithBufferedS
     protected BenchmarkerBlockByBlockWithBufferedStream(String OUTPUT_FOLDER, String FILENAME_PREFIX, int blockSize) {
         super(IOStrategy.BlockByBlockWithBufferedStream, OUTPUT_FOLDER, FILENAME_PREFIX, blockSize);
     }
-
+    //overrides the super(super) class method
     public void produceDataToStream(long numberOfBytesToWrite, int blockSize) throws IOException {
         long remainder = numberOfBytesToWrite % blockSize;
         long numberOfBlocks = (numberOfBytesToWrite / blockSize);
