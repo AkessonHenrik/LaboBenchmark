@@ -72,6 +72,7 @@ public class Experiment {
         result = bufferedBlock5.consumeTestData(5);
         csvWriter.writeResults(result);
         result = bufferedByte.consumeTestData(0);
+        csvWriter.writeResults(result);
 
         LOG.log(Level.INFO, "");
         LOG.log(Level.INFO, "*** BENCHMARKING READ OPERATIONS (with BufferedStream)", Timer.takeTime());
